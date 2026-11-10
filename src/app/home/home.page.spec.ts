@@ -1,5 +1,6 @@
 import type { ComponentFixture } from '@angular/core/testing';
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { describe, beforeEach, it, expect } from 'vitest';
 
 import { HomePage } from './home.page';
@@ -12,6 +13,7 @@ describe('HomePage', () => {
   const echo = (): HTMLParagraphElement | null => host.querySelector('#container p');
 
   beforeEach(async () => {
+    TestBed.configureTestingModule({ providers: [provideRouter([])] });
     fixture = TestBed.createComponent(HomePage);
     component = fixture.componentInstance;
     host = fixture.nativeElement as HTMLElement;
@@ -54,6 +56,12 @@ describe('HomePage', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     expect(echo()).toBeNull();
+  });
+
+  it('links to the users page', () => {
+    const link = host.querySelector('[data-testid="users-link"]');
+    expect(link?.textContent?.trim()).toBe('View users');
+    expect(link?.getAttribute('href')).toBe('/users');
   });
 
   it('updates inputValue and the paragraph when the user types', async () => {

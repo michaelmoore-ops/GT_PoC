@@ -1,0 +1,48 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Users</ion-title>
+    <ion-buttons slot="end">
+      <ion-button [disabled]="userService.isLoading()" (click)="userService.reload()">Refresh</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Users</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  @if (userService.isLoading() && userService.count() === 0) {
+  <div class="state" data-testid="loading">
+    <ion-spinner></ion-spinner>
+    <p>Loading users…</p>
+  </div>
+  } @else if (userService.error(); as error) {
+  <div class="state" data-testid="error">
+    <p>{{ error }}</p>
+    <ion-button (click)="userService.reload()">Try again</ion-button>
+  </div>
+  } @else {
+  <ion-list data-testid="user-list">
+    @for (user of userService.users(); track user.id) {
+    <ion-item>
+      <ion-label>
+        <h2>{{ user.name }}</h2>
+        <p>{{ user.email }}</p>
+        <p>{{ user.company.name }}</p>
+      </ion-label>
+      <ion-note slot="end">{{ user.address.city }}</ion-note>
+    </ion-item>
+    } @empty {
+    <div class="state" data-testid="empty">
+      <p>No users found.</p>
+    </div>
+    }
+  </ion-list>
+  }
+</ion-content>
